@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мобильное приложение</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="preloader">Загрузка...</div>
+
+    <header class="header">
+        <div class="header__back" data-navigate="main">←</div>
+        <div class="header__title">Ник</div>
+        <div class="header__coins">1500</div>
+    </header>
+
+    <main class="page-container">
+        <!-- Основная страница -->
+        <div id="main" class="page active">
+            <div class="profile-card">
+                <div class="avatar" style="background: #e0e0e0"></div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span>❤️ 60/100</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-item">Уровень: 10</div>
+                    <div class="stat-item">Монеты: 1500</div>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="content-block" data-navigate="missions">
+                    <h2>Закреплённые миссии</h2>
+                    <div class="mission-item">Миссия 1 100</div>
+                    <div class="mission-item">Миссия 2 150</div>
+                    <div class="mission-item">Миссия 3 200</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="content-block" data-navigate="shop">
+                    <h2>Скидки сегодня</h2>
+                    <div class="items-grid">
+                        <div class="item-placeholder"></div>
+                        <div class="item-placeholder"></div>
+                        <div class="item-placeholder"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница магазина -->
+        <div id="shop" class="page">
+            <div class="shop-section">
+                <h2>Скидки</h2>
+                <div class="items-grid">
+                    <div class="item-placeholder"></div>
+                    <div class="item-placeholder"></div>
+                    <div class="item-placeholder"></div>
+                </div>
+            </div>
+
+            <div class="shop-section">
+                <h2>Предметы</h2>
+                <div class="items-grid">
+                    <div class="item-placeholder"></div>
+                    <div class="item-placeholder"></div>
+                    <div class="item-placeholder"></div>
+                    <div class="item-placeholder"></div>
+                    <div class="item-placeholder"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница миссий -->
+        <div id="missions" class="page">
+            <div class="missions-section">
+                <h2>Solo миссии</h2>
+                <div class="mission-item">
+                    Миссия 1 100 <input type="checkbox" disabled>
+                </div>
+                <div class="mission-item">
+                    Миссия 2 150 <input type="checkbox" disabled>
+                </div>
+                <div class="mission-item">
+                    Миссия 3 200 <input type="checkbox" disabled>
+                </div>
+            </div>
+
+            <div class="missions-section">
+                <h2>Team миссии</h2>
+                <div class="mission-item">
+                    Миссия 4 1000 <input type="checkbox" disabled>
+                </div>
+                <div class="mission-item">
+                    Миссия 5 1500 <input type="checkbox" disabled>
+                </div>
+                <div class="mission-item">
+                    Миссия 6 2000 <input type="checkbox" disabled>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница профиля -->
+        <div id="profile" class="page">
+            <div class="avatar-large" style="background: #e0e0e0"></div>
+            <h2 class="profile-name">Ник</h2>
+            <div class="profile-stats">
+                <div class="stat-block">
+                    Уровень 10
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 70%"></div>
+                    </div>
+                </div>
+                <div class="stat-block">Монеты: 1000</div>
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
