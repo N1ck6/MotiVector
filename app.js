@@ -1,7 +1,7 @@
 class Router {
     constructor() {
         this.routes = {};
-        this.currentRoute = null;
+        this.currentRoute = 'main';
         this.history = [];
         this.currentIndex = -1;
         
@@ -23,34 +23,45 @@ class Router {
     }
 
     async showPage(routeName, pushState = true) {
-        const newPage = this.routes[routeName];
-        if (!newPage || newPage === this.currentRoute) return;
+        if (routeName === this.currentRoute) return;
 
-        // Анимация выхода
-        if (this.currentRoute) {
-            const oldPage = this.routes[this.currentRoute];
-            oldPage.classList.remove('active');
-            oldPage.classList.add('slide-exit');
+        const newPage = this.routes[routeName];
+        const oldPage = this.routes[this.currentRoute];
+        
+        if (!newPage) return;
+
+        if (oldPage) {
+            oldPage.style.transform = 'translateX(-100%)';
+            oldPage.style.opacity = '0';
             
-            await new Promise(r => setTimeout(r, 300));
-            oldPage.classList.remove('slide-exit');
+            await new Promise(r => setTimeout(r, 400));
+            oldPage.classList.remove('active');
         }
 
-        // Анимация входа
-        newPage.classList.add('slide-enter');
+        newPage.style.transform = 'translateX(100%)';
+        newPage.style.opacity = '0';
         newPage.classList.add('active');
         
-        setTimeout(() => {
-            newPage.classList.remove('slide-enter');
-        }, 100);
+        this.updateHeader(routeName);
+        
+        requestAnimationFrame(() => {
+            newPage.style.transform = 'translateX(0)';
+            newPage.style.opacity = '1';
+        });
 
-        this.currentRoute = routeName;
         if (pushState) {
-            this.history = this.history.slice(0, this.currentIndex + 1);
             this.history.push({ route: routeName });
             this.currentIndex++;
             window.history.pushState({ route: routeName }, '', `#${routeName}`);
         }
+        
+        this.currentRoute = routeName;
+    }
+
+    updateHeader(routeName) {
+        const backButton = document.querySelector('.header__back');
+        const isMainPage = routeName === 'main';
+        backButton.style.display = isMainPage ? 'none' : 'flex';
     }
 
     back() {
@@ -63,7 +74,8 @@ class Router {
     }
 }
 
-// Инициализация роутера
+
+
 const router = new Router();
 document.querySelectorAll('.page').forEach(page => {
     router.addRoute(page.id, page);
@@ -76,13 +88,12 @@ document.querySelectorAll('[data-navigate]').forEach(link => {
         router.showPage(target);
     });
 });
+router.updateHeader('main');
 
-// Дополнительные настройки
 document.querySelector('.header__back').addEventListener('click', () => {
     router.back();
 });
 
-// Preloader
 window.addEventListener('load', () => {
     setTimeout(() => {
         document.querySelector('.preloader').style.opacity = '0';
@@ -92,7 +103,6 @@ window.addEventListener('load', () => {
     }, 500);
 });
 
-// Плавный скролл
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -102,7 +112,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Micro-interactions
 document.querySelectorAll('.mission-item').forEach(item => {
     item.addEventListener('click', () => {
         item.style.transform = 'scale(0.98)';
@@ -110,7 +119,6 @@ document.querySelectorAll('.mission-item').forEach(item => {
     });
 });
 
-// Доступность
 document.querySelectorAll('input').forEach(input => {
     input.setAttribute('aria-label', 'Статус выполнения');
 });
