@@ -29,7 +29,7 @@ class Router {
         const oldPage = this.routes[this.currentRoute];
         
         if (!newPage) return;
-
+        window.scroll(0, 0);
         if (oldPage) {
             oldPage.style.transform = 'translateX(-100%)';
             oldPage.style.opacity = '0';
