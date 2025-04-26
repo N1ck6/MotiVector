@@ -12,14 +12,14 @@
 
     <header class="header">
         <div class="header__back" data-navigate="main">←</div>
-        <div class="header__title">Ник</div>
+        <div class="header__title" id="header-name"></div>
         <div class="header__coins">1500c</div>
     </header>
 
     <main class="page-container">
         <div id="main" class="page active">
             <div class="profile-card">
-                <div class="avatar" style="background: #e0e0e0" data-navigate="profile"></div>
+                <div class="avatar" id="profile-pic" style="background: #e0e0e0" data-navigate="profile"></div>
                 <div class="stats">
                     <div class="stat-item">
                         <div class="xp-flex">
@@ -76,13 +76,13 @@
                 <h2>Solo миссии</h2>
                 <div class="missions-grid">
                     <div class="mission-item">
-                        Попить воды 1 раз - 100xp <input type="checkbox" disabled>
+                        Попить воды 1 раз - 100xp <input type="checkbox">
                     </div>
                     <div class="mission-item">
-                        Попить воды 2 раза - 150xp <input type="checkbox" disabled>
+                        Попить воды 2 раза - 150xp <input type="checkbox">
                     </div>
                     <div class="mission-item">
-                        Попить воды 3 раза - 200xp <input type="checkbox" disabled>
+                        Попить воды 3 раза - 200xp <input type="checkbox">
                     </div>
                 </div>
             </div>
@@ -90,13 +90,13 @@
                 <h2>Team миссии</h2>
                 <div class="missions-grid">
                     <div class="mission-item">
-                        Обпейся воды - 1000xp <input type="checkbox" disabled>
+                        Обпейся воды - 1000xp <input type="checkbox">
                     </div>
                     <div class="mission-item">
-                        Обпейся воды - 1500xp <input type="checkbox" disabled>
+                        Обпейся воды - 1500xp <input type="checkbox">
                     </div>
                     <div class="mission-item">
-                        Обпейся воды - 2000xp <input type="checkbox" disabled>
+                        Обпейся воды - 2000xp <input type="checkbox">
                     </div>
                 </div>
             </div>
@@ -104,7 +104,7 @@
         <!-- Страница профиля -->
         <div id="profile" class="page">
             <div class="profile-card">
-                <div class="avatar-large" style="background: #e0e0e0"></div>
+                <div class="avatar-large" id="profile-pic-large" style="background: #e0e0e0"></div>
                 <div class="stats">
                     <div class="stat-item">
                         <div class="xp-flex">
