@@ -100,15 +100,14 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Откройте приложение через Telegram!');
         return;
     }
-    Telegram.WebApp.expand();
 
     const initData = new URLSearchParams(window.Telegram.WebApp.initData);
     const user = JSON.parse(decodeURIComponent(initData.get('user') || '{}'));
-    if (!user) {
+    if (!user.id) {
         console.error('Пользователь не авторизован');
         return;
     }
-
+    console.log(user)
     document.getElementById('header-name').innerHtml = user.username;
     mainPic = document.getElementById('profile-pic');
     profilePic = document.getElementById('profile-pic-large');
@@ -116,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mainPic.style.backgroundImage = user.photoUrl;
     profilePic.style.backgroundColor = "";
     profilePic.style.backgroundImage = user.photoUrl;
+    Telegram.WebApp.expand();
 });
 window.addEventListener('load', () => {
     setTimeout(() => {
