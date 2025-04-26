@@ -109,14 +109,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     Telegram.WebApp.expand();
     console.log(user);
-    console.log(user.username, user.photoUrl);
-    document.getElementById('header-name').innerHtml = user.username;
+    console.log(user.username, user.photo_url);
+    const nameValue = document.getElementById('header-name');
+    nameValue.textContent = user.username;
     mainPic = document.getElementById('profile-pic');
     profilePic = document.getElementById('profile-pic-large');
     mainPic.style = "";
-    mainPic.style.backgroundImage = `url(${user.photoUrl})`;
+    mainPic.style.backgroundImage = `url(${user.photo_url})`;
     profilePic.style = "";
-    profilePic.style.backgroundImage = `url(${user.photoUrl})`;
+    profilePic.style.backgroundImage = `url(${user.photo_url})`;
 });
 window.addEventListener('load', () => {
     setTimeout(() => {
