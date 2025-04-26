@@ -103,6 +103,27 @@ window.addEventListener('load', () => {
             document.querySelector('.preloader').style.display = 'none';
         }, 500);
     }, 500);
+    Telegram.WebApp.ready();
+    const user = Telegram.WebApp.user;
+    if (!user) {
+        console.error('Пользователь не авторизован');
+        return;
+    }
+    const userData = {
+        id: user.id,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        username: user.username,
+        photoUrl: user.photo_url
+    };
+    document.getElementById('header-name').innerHtml = userData.username;
+mainPic = document.getElementById('profile-pic');
+profilePic = document.getElementById('profile-pic-large');
+    mainPic.style.backgroundColor = "";
+    mainPic.style.backgroundImage = userData.photoUrl;
+    profilePic.style.backgroundColor = "";
+    profilePic.style.backgroundImage = userData.photoUrl;
+
 });
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
