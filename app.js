@@ -96,21 +96,19 @@ document.querySelector('.header__back').addEventListener('click', () => {
     router.back();
 });
 document.addEventListener('DOMContentLoaded', () => {
-    if (!window.Telegram || !Telegram.WebApp) {
+    if (!window.Telegram.WebApp || !window.Telegram.WebApp.initData) {
         console.error('Откройте приложение через Telegram!');
         return;
     }
     Telegram.WebApp.ready();
     Telegram.WebApp.expand();
 
-    Telegram.WebApp.onEvent('mainButtonClicked', () => {
-        const user1 = Telegram.WebApp.user;
-        console.log('User data:', user1);
-    });
-
-    const user = Telegram.WebApp.user;
+    const user = window.Telegram.WebApp.initData.user;
+    console.log("-----")
+    console.log(user)
     if (!user) {
         console.error('Пользователь не авторизован');
+        console.log("-----")
         return;
     }
     const userData = {
