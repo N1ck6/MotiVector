@@ -156,6 +156,7 @@ body {
 }
 
 .item-placeholder {
+    position: relative;
     padding-top: 100%;
     background: #f0f0f0;
     border-radius: 10px;
@@ -244,4 +245,83 @@ body {
     .header__back {
         opacity: 1;
     }
+}
+
+.avatar {
+    cursor: pointer;
+}
+
+
+.item-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.item-image {
+    width: 200px;
+    height: 200px;
+    background-size: cover;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+.item-info {
+    background: var(--primary);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    width: 100%;
+    text-align: center;
+}
+
+.item-name {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.item-price {
+    font-size: 1.2em;
+    color: var(--accent);
+    margin-bottom: 20px;
+}
+
+.buy-button {
+    background: var(--accent);
+    color: black;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: var(--transition);
+}
+
+.buy-button:hover {
+    transform: scale(1.05);
+}
+
+.item {
+    background-size: cover;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.item:hover {
+    transform: scale(1.05);
+}
+
+.price-tag {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(161, 161, 161, 0.8);
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 0.7em;
+    font-weight: bold;
 }
