@@ -108,8 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     Telegram.WebApp.expand();
-    console.log(user);
-    console.log(user.username, user.photo_url);
     const nameValue = document.getElementById('header-name');
     nameValue.textContent = user.username;
     mainPic = document.getElementById('profile-pic');
