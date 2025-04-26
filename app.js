@@ -107,15 +107,14 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Пользователь не авторизован');
         return;
     }
-    console.log(user)
+    Telegram.WebApp.expand();
     document.getElementById('header-name').innerHtml = user.username;
     mainPic = document.getElementById('profile-pic');
     profilePic = document.getElementById('profile-pic-large');
-    mainPic.style.backgroundColor = "";
-    mainPic.style.backgroundImage = user.photoUrl;
-    profilePic.style.backgroundColor = "";
-    profilePic.style.backgroundImage = user.photoUrl;
-    Telegram.WebApp.expand();
+    mainPic.style = "";
+    mainPic.style.backgroundImage = `url(${user.photoUrl})`;
+    profilePic.style = "";
+    profilePic.style.backgroundImage = `url(${user.photoUrl})`;
 });
 window.addEventListener('load', () => {
     setTimeout(() => {
