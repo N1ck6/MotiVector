@@ -95,15 +95,19 @@ router.updateHeader('main');
 document.querySelector('.header__back').addEventListener('click', () => {
     router.back();
 });
-
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        document.querySelector('.preloader').style.opacity = '0';
-        setTimeout(() => {
-            document.querySelector('.preloader').style.display = 'none';
-        }, 500);
-    }, 500);
+document.addEventListener('DOMContentLoaded', () => {
+    if (!window.Telegram || !Telegram.WebApp) {
+        console.error('Откройте приложение через Telegram!');
+        return;
+    }
     Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
+
+    Telegram.WebApp.onEvent('mainButtonClicked', () => {
+        const user1 = Telegram.WebApp.user;
+        console.log('User data:', user1);
+    });
+
     const user = Telegram.WebApp.user;
     if (!user) {
         console.error('Пользователь не авторизован');
@@ -112,18 +116,24 @@ window.addEventListener('load', () => {
     const userData = {
         id: user.id,
         firstName: user.first_name,
-        lastName: user.last_name,
         username: user.username,
         photoUrl: user.photo_url
     };
     document.getElementById('header-name').innerHtml = userData.username;
-mainPic = document.getElementById('profile-pic');
-profilePic = document.getElementById('profile-pic-large');
+    mainPic = document.getElementById('profile-pic');
+    profilePic = document.getElementById('profile-pic-large');
     mainPic.style.backgroundColor = "";
     mainPic.style.backgroundImage = userData.photoUrl;
     profilePic.style.backgroundColor = "";
     profilePic.style.backgroundImage = userData.photoUrl;
-
+});
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.querySelector('.preloader').style.opacity = '0';
+        setTimeout(() => {
+            document.querySelector('.preloader').style.display = 'none';
+        }, 500);
+    }, 500);
 });
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
