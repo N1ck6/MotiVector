@@ -2,7 +2,7 @@ class Router {
     constructor() {
         this.routes = {};
         this.currentRoute = "main";
-        
+        window.history.pushState({ route: this.currentRoute }, '', `#${this.currentRoute}`);
         window.addEventListener("popstate", (e) => {
             if (e.state) this.showPage(e.state.route, false);
         });
