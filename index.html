@@ -8,7 +8,14 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div class="preloader">Загрузка...</div>
+    <div class="preloader">
+        <div class="stopwatch-container">
+            <canvas id="sandCanvas"></canvas>
+            <div class="clock-face"></div>
+            <div class="hand hour-hand" id="hourHand"></div>
+            <div class="hand minute-hand" id="minuteHand"></div>
+          </div>
+    </div>
 
     <header class="header">
         <div class="header__back" data-navigate="main">←</div>
