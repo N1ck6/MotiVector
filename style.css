@@ -13,7 +13,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    overflow-x: hidden;
 }
 
 body {
@@ -30,6 +29,7 @@ body {
     padding: 20px;
     padding-top: 60px;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .header {
@@ -318,12 +318,19 @@ body {
 }
 
 .preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: var(--primary);
-    margin: 0;
-    min-height: 100vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-evenly;
     align-items: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.5s;
 }
 
 .stopwatch-container {
@@ -371,26 +378,23 @@ body {
 
 .hand {
     position: absolute;
-    width: 1vmin;
-    height: 45%;
     background: black;
-    top: 5%;
     left: 50%;
     transform-origin: bottom center;
-    border-radius: 0.2vmin;
 }
-
 .hour-hand {
-    transform: rotate(0deg);
-}
-.minute-hand {
-    transform: rotate(0deg);
+    width: 1.6vmin;
+    height: 25%;
+    top: 25%;
 }
 
+.minute-hand {
+    width: 1vmin;
+    height: 45%;
+    top: 5%;
+}
 canvas {
     position: absolute;
-    top: 1.6vmin;
-    left: 1.6vmin;
     width: 100%;
     height: 100%;
     border-radius: 50%;

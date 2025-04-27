@@ -121,10 +121,10 @@ window.addEventListener("load", () => {
     setTimeout(() => {
         document.querySelector(".preloader").style.opacity = "0";
         setTimeout(() => {
-            document.querySelector(".preloader").style.display = "none";
+            document.querySelector(".preloader").remove();
         }, 500);
-    }, 50000);
-});
+        }, 500);
+    });
 
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", function (e) {
@@ -238,7 +238,7 @@ const ctx = canvas.getContext("2d");
 canvas.width = 300;
 canvas.height = 300;
 ctx.beginPath();
-ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
+ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2 -7, 0, Math.PI * 2);
 ctx.clip();
 
 class Grain {
