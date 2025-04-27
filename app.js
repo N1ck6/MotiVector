@@ -2,14 +2,9 @@ class Router {
     constructor() {
         this.routes = {};
         this.currentRoute = "main";
-        this.history = [];
-        this.currentIndex = -1;
-
-        window.addEventListener("hashchange", () => this.parseHash());
+        
         window.addEventListener("popstate", (e) => {
-            if (e.state) {
-                this.showPage(e.state.route, false);
-            }
+            if (e.state) this.showPage(e.state.route, false);
         });
     }
 
@@ -17,84 +12,58 @@ class Router {
         this.routes[name] = element;
     }
 
-    parseHash() {
-        const hash = window.location.hash.slice(1) || "main";
-        this.showPage(hash);
-    }
-
     async showPage(routeName, pushState = true) {
         if (routeName === this.currentRoute) return;
 
         const newPage = this.routes[routeName];
         const oldPage = this.routes[this.currentRoute];
+        const backButton = document.querySelector('.header__back');
 
         if (!newPage) return;
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "auto",
-        });
         if (oldPage) {
-            oldPage.style.transform = "translateX(-100%)";
+            if (!pushState) oldPage.style.transform = "translateX(30%)";
+            else oldPage.style.transform = "translateX(-30%)";
             oldPage.style.opacity = "0";
-
-            await new Promise((r) => setTimeout(r, 400));
+            await new Promise((r) => setTimeout(r, 300));
             oldPage.classList.remove("active");
         }
 
-        newPage.style.transform = "translateX(100%)";
-        newPage.style.opacity = "0";
-        newPage.classList.add("active");
-
-        this.updateHeader(routeName);
-
+        newPage.style.transform = 'translateX(30%)';
+        newPage.style.opacity = '0';
+        newPage.classList.add('active');
+        
+        backButton.style.display = routeName === "main" ? "none" : "flex";
+        backButton.setAttribute('data-navigate', this.currentRoute);
+        
         requestAnimationFrame(() => {
             newPage.style.transform = "translateX(0)";
             newPage.style.opacity = "1";
         });
 
-        if (pushState) {
-            this.history.push({ route: routeName });
-            this.currentIndex++;
-            window.history.pushState({ route: routeName }, "", `#${routeName}`);
-        }
-
+        if (pushState) window.history.pushState({ route: routeName }, '', `#${routeName}`);
         this.currentRoute = routeName;
     }
-
-    updateHeader(routeName) {
-        const backButton = document.querySelector(".header__back");
-        const isMainPage = routeName === "main";
-        backButton.style.display = isMainPage ? "none" : "flex";
-    }
-
     back() {
-        if (this.currentIndex > 0) {
-            this.currentIndex--;
-            const prevState = this.history[this.currentIndex];
-            this.showPage(prevState.route, false);
-            window.history.back();
-        }
+        window.history.back();
     }
 }
 
 const router = new Router();
-document.querySelectorAll(".page").forEach((page) => {
+document.querySelectorAll('.page').forEach(page => {
     router.addRoute(page.id, page);
 });
 
 document.querySelectorAll("[data-navigate]").forEach((link) => {
-    link.addEventListener("click", (e) => {
-        e.preventDefault();
-        const target = link.getAttribute("data-navigate");
-        router.showPage(target);
-    });
+    if (!link.classList.contains("header__back")) {
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const target = link.getAttribute("data-navigate");
+            router.showPage(target);
+        });
+    }
 });
-router.updateHeader("main");
+document.querySelector('.header__back').addEventListener('click', () => router.back());
 
-document.querySelector(".header__back").addEventListener("click", () => {
-    router.back();
-});
 document.addEventListener("DOMContentLoaded", () => {
     if (!window.Telegram.WebApp || !window.Telegram.WebApp.initData) {
         console.error("Откройте приложение через Telegram!");
@@ -265,11 +234,10 @@ for (let i = 0; i < 100; i++) {
     grains.push(new Grain());
 }
 function rotateHands() {
+    if (!document.getElementById("hourHand")) return;
     const now1 = Date.now() / 1000;
     const secAngle = (((now1 - now) * Math.PI) / 2) % (Math.PI * 4); // 2-second rotation
-    document.getElementById(
-        "hourHand"
-    ).style.transform = `rotate(${secAngle}rad)`;
+    document.getElementById("hourHand").style.transform = `rotate(${secAngle}rad)`;
     document.getElementById("minuteHand").style.transform = `rotate(${
         secAngle * 0.5
     }rad)`;
@@ -280,6 +248,7 @@ function animate() {
         grain.update();
         grain.draw();
     });
+    if (!document.getElementById("hourHand")) return;
     rotateHands();
     requestAnimationFrame(animate);
 }
