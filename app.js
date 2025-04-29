@@ -1,3 +1,23 @@
+let userData = {
+    activeMissions: new Set(["Попить воды 1 раз - 100xp", "Попить воды 2 раза - 150xp", "Попить воды 3 раза - 200xp"]),
+    completedMissions: new Set(),
+    purchasedItems: new Set()
+};
+
+function updateUserData(type, value) {
+    userData[type] = value;
+    document.querySelectorAll(`[data-${type}]`).forEach(el => {
+        el.textContent = type === 'coins' ? `${value}c` : value;
+    });
+    if(type === 'xp') document.querySelector('.progress').style.width = `${Math.min(value, 100)}%`;
+}
+
+function initUserData() {
+    updateUserData('name', 'Ник');
+    updateUserData('xp', 80);
+    updateUserData('level', 10);
+    updateUserData('coins', 2000);
+}
 class Router {
     constructor() {
         this.routes = {};
@@ -5,6 +25,12 @@ class Router {
         window.history.pushState({ route: this.currentRoute }, '', `#${this.currentRoute}`);
         window.addEventListener("popstate", (e) => {
             if (e.state) this.showPage(e.state.route, false);
+        });
+        document.querySelectorAll('.page').forEach(el => {
+            el.style.display = 'none';
+        });
+        document.querySelectorAll('.active').forEach(el => {
+            el.style.display = 'block';
         });
     }
 
@@ -18,20 +44,24 @@ class Router {
         const newPage = this.routes[routeName];
         const oldPage = this.routes[this.currentRoute];
         const backButton = document.querySelector('.header__back');
+        const displayCoins = document.querySelector('.header__coins');
 
         if (!newPage) return;
+        newPage.style.display = 'block';
         if (oldPage) {
             if (!pushState) oldPage.style.transform = "translateX(30%)";
             else oldPage.style.transform = "translateX(-30%)";
             oldPage.style.opacity = "0";
             await new Promise((r) => setTimeout(r, 300));
             oldPage.classList.remove("active");
+            oldPage.style.display = 'none';
         }
 
         newPage.style.transform = 'translateX(30%)';
         newPage.style.opacity = '0';
         newPage.classList.add('active');
         
+        displayCoins.style.display = routeName === "shop" || routeName === "item" ? "flex" : "none";
         backButton.style.display = routeName === "main" ? "none" : "flex";
         backButton.setAttribute('data-navigate', this.currentRoute);
         
@@ -47,7 +77,110 @@ class Router {
         window.history.back();
     }
 }
+function createMissionElement(text, isActive = false) {
+    const mission = document.createElement('div');
+    mission.className = 'mission-item';
+    mission.innerHTML = `
+        ${text} 
+        <input type="checkbox" ${isActive ? 'checked' : ''}>
+    `;
+    
+    mission.addEventListener('click', (e) => {
+        if(e.target.tagName !== 'INPUT') toggleMissionCompletion(text);
+        else updateActiveMissions()
+    });
+    return mission;
+}
 
+function toggleMissionCompletion(text) {
+    Array.from(document.querySelectorAll('.mission-item')).filter(item => item.textContent.trim() === text.trim()).forEach(mission => {
+        if(mission.classList.contains('completed')) {
+            mission.classList.remove('completed');
+            userData.completedMissions.delete(text);
+        } else {
+            mission.classList.add('completed');
+            userData.completedMissions.add(text);
+        }
+    });
+}
+
+function updateActiveMissions() {
+    const mainMissions = document.querySelector('#main .missions-grid');
+    mainMissions.innerHTML = '';
+    
+    Array.from(userData.activeMissions).forEach(text => {
+        mission = createMissionElement(text, true);
+        if (userData.completedMissions.has(text)) mission.classList.add('completed');
+        mainMissions.appendChild(mission);
+    });
+}
+
+function loadMissions() {
+    const soloMissions = [
+        "Попить воды 1 раз - 100xp",
+        "Попить воды 2 раза - 150xp",
+        "Попить воды 3 раза - 200xp",
+        "Попить воды 4 раза - 250xp"
+    ];
+    const teamMissions = [
+        "Обпейся воды - 1000xp",
+        "Обпейся воды - 1500xp",
+        "Обпейся воды - 2000xp"
+    ];
+    const ownMissions = [
+        "Подтянуться 1 раз - 100xp",
+        "Отжаться 1 раз - 100xp", 
+        "Проснуться вовремя 1 раз - 1000xp"
+    ];
+
+    container = document.querySelector('#solo-missions');
+    soloMissions.forEach((m) => {
+        mission = createMissionElement(m, userData.activeMissions.has(m));
+        container.appendChild(mission);
+    });
+
+    container = document.querySelector('#team-missions');
+    teamMissions.forEach((m) => {
+        mission = createMissionElement(m, userData.activeMissions.has(m));
+        container.appendChild(mission);
+    });
+
+    container = document.querySelector('#own-missions');
+    ownMissions.forEach((m) => {
+        mission = createMissionElement(m, userData.activeMissions.has(m));
+        container.appendChild(mission);
+    });
+
+    const mainMissions = document.querySelector('#main .missions-grid');
+    mainMissions.innerHTML = '';
+    Array.from(userData.activeMissions).forEach(text => {
+        mission = createMissionElement(text, true);
+        mainMissions.appendChild(mission);
+    });
+}
+loadMissions();
+updateActiveMissions();
+
+document.querySelectorAll('.mission-item input[type="checkbox"]').forEach(checkbox => {
+    checkbox.addEventListener('change', (e) => {
+        const missionText = e.target.parentElement.textContent.trim();
+        if(e.target.checked) {
+            if(userData.activeMissions.size >= 4) {
+                e.target.checked = false;
+                if (!notified) {
+                    notified = true;
+                    new Notification(`Максимум ${userData.activeMissions.size} активные миссии!`).show();
+                    setTimeout(() => {
+                        notified = false;
+                    }, 1200);
+                }
+                return;
+            }
+            userData.activeMissions.add(missionText);
+        } else userData.activeMissions.delete(missionText);
+        updateActiveMissions();
+    });
+});
 const router = new Router();
 document.querySelectorAll('.page').forEach(page => {
     router.addRoute(page.id, page);
@@ -65,8 +198,20 @@ document.querySelectorAll("[data-navigate]").forEach((link) => {
 document.querySelector('.header__back').addEventListener('click', () => router.back());
 
 document.addEventListener("DOMContentLoaded", () => {
+    initUserData();
+    
+    document.querySelectorAll('.item-placeholder').forEach(item => {
+        if(userData.purchasedItems.has(item.name)) {
+            item.innerHTML += `<div class="purchased-overlay">Куплено</div>`;
+            item.style.pointerEvents = 'none';
+        }
+    });
     if (!window.Telegram.WebApp || !window.Telegram.WebApp.initData) {
         console.error("Откройте приложение через Telegram!");
+        mainPic = document.getElementById("profile-pic");
+        profilePic = document.getElementById("profile-pic-large");
+        mainPic.style.backgroundImage = `url(data/avatar.png)`;
+        profilePic.style.backgroundImage = `url(data/avatar.png)`;
         return;
     }
 
@@ -81,10 +226,14 @@ document.addEventListener("DOMContentLoaded", () => {
     nameValue.textContent = user.username;
     mainPic = document.getElementById("profile-pic");
     profilePic = document.getElementById("profile-pic-large");
-    mainPic.style = "";
     mainPic.style.backgroundImage = `url(${user.photo_url})`;
-    profilePic.style = "";
     profilePic.style.backgroundImage = `url(${user.photo_url})`;
+
+    const theme = window.Telegram.WebApp.themeParams;
+    const primaryColor = theme.secondary_bg_color || "#4e0000";
+    const accentColor = theme.button_color || "#ff1a1a";
+    document.documentElement.style.setProperty("--secondary", primaryColor);
+    document.documentElement.style.setProperty("--accent", accentColor);
 });
 window.addEventListener("load", () => {
     setTimeout(() => {
@@ -162,7 +311,7 @@ function initializeItems() {
     const seed = getSeed();
     const seededRandom = createRandom(seed);
     const shuffledFruits = shuffleArray([...fruits], seededRandom);
-    const selectedFruits = shuffledFruits.slice(0, 12);
+    const selectedFruits = shuffledFruits.slice(0, 20);
     const allItemsDiv = document.getElementById("all-items");
     selectedFruits.forEach((fruit) => {
         const item = document.createElement("div");
@@ -189,8 +338,8 @@ function initializeItems() {
         mainSalesDiv.appendChild(item);
     });
 }
-
 initializeItems();
+
 document.querySelectorAll(".item-placeholder").forEach((item) => {
     item.addEventListener("click", () => {
         document.getElementById("showcase-name").textContent = item.name;
@@ -204,6 +353,7 @@ document.querySelectorAll(".item-placeholder").forEach((item) => {
 const now = Date.now() / 1000;
 const canvas = document.getElementById("sandCanvas");
 const ctx = canvas.getContext("2d");
+let notified = false;
 canvas.width = 300;
 canvas.height = 300;
 ctx.beginPath();
@@ -253,3 +403,43 @@ function animate() {
     requestAnimationFrame(animate);
 }
 animate();
+
+document.querySelector('.buy-button').addEventListener('click', () => {
+    const price = parseInt(document.getElementById('showcase-price').textContent);
+    const itemName = document.getElementById('showcase-name').textContent;
+    
+    if(userData.coins >= price && !userData.purchasedItems.has(itemName)) {
+        userData.coins -= price;
+        userData.purchasedItems.add(itemName);
+        updateUserData('coins', userData.coins);
+        new Notification('Покупка успешна!').show();
+    } else {
+        new Notification('Недостаточно монет!').show();
+        return
+    }
+    document.querySelectorAll('.item-placeholder').forEach(item => {
+        if(item.name === itemName) {
+            item.replaceChildren();
+            item.innerHTML += `<div class="purchased-overlay"><b>Куплено</b></div>`;
+            item.style.pointerEvents = 'none';
+        }
+    });
+
+    const avatars = document.querySelectorAll('.avatar-item');
+    avatars.forEach(avatar => {
+        avatar.style.backgroundImage = `url('data/${itemName}.png')`;
+        avatar.style.border = `2px solid var(--secondary)`;
+    });
+});
+class Notification {
+    constructor(text) {
+        this.el = document.createElement('div');
+        this.el.className = 'notification';
+        this.el.textContent = text;
+        document.body.appendChild(this.el);
+    }
+    
+    show() {
+        setTimeout(() => this.el.remove(), 1200);
+    }
+}

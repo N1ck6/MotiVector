@@ -63,6 +63,15 @@ body {
     text-shadow: 0 0 5px var(--accent);
 }
 
+.header__coins {
+    position: absolute;
+    display: none;
+    right: 3%;
+    flex: 1;
+    font-size: 1.2em;
+    text-shadow: 0 0 5px var(--accent);
+}
+
 .profile-card {
     background: linear-gradient(to bottom, var(--primary), var(--secondary));
     border-radius: var(--border-radius);
@@ -79,12 +88,23 @@ body {
 }
 
 .avatar {
+    position: relative;
     width: 60%;
     padding-top: 60%;
     border-radius: 10%;
     margin-bottom: 15px;
-    background-size: cover;
-    background-position: center;
+    cursor: pointer;
+    border: 3px solid var(--accent);
+}
+
+.avatar-item {
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    right: 5%;
+    bottom: 5%;
+    border-radius: 15%;
+    cursor: pointer;
 }
 
 .stats {
@@ -130,8 +150,8 @@ body {
 }
 
 .content-block {
+    background: linear-gradient(to bottom, var(--primary), var(--secondary));
     padding: 15px;
-    background: var(--primary);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
 }
@@ -158,20 +178,57 @@ body {
 }
 
 .mission-item {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 2.2%;
     background: var(--primary);
     border-radius: var(--border-radius);
     border: 1px solid var(--accent);
     text-shadow: 0 0 3px var(--accent);
+    overflow: hidden;
+}
+
+.mission-item.completed::after {
+    content: '';
+    position: absolute;
+    left: 2%;
+    top: 45%;
+    width: 98%;
+    height: 1px;
+    background: var(--accent);
+    border: 2px solid var(--secondary);
+    animation: strike 0.3s forwards;
+    opacity: 80%;
+}
+
+@keyframes strike {
+    from { width: 0; }
+    to { width: 96%; }
+}
+
+.mission-item.completed input {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.mission-item input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    filter: drop-shadow(0 0 2px var(--accent));
+}
+
+.mission-item input:checked {
+    animation: pulse 0.5s;
 }
 
 .missions-section {
     width: 90vw;
     max-width: 400px;
-    margin: 0 auto;
+    margin: 0 auto 5% auto;
 }
 .shop-section {
     width: 90vw;
@@ -180,13 +237,20 @@ body {
 }
 
 .avatar-large {
+    position: relative;
     width: 100%;
     padding-top: 100%;
     background: linear-gradient(to bottom, var(--primary), var(--secondary));
+    margin-bottom: 20px;
+    border: 3px solid var(--accent);
+}
+
+
+.avatar, .avatar-large, .avatar-item {
+    background-repeat: no-repeat;
+    border-radius: 10%;
     background-size: cover;
     background-position: center;
-    border-radius: 20%;
-    margin-bottom: 20px;
 }
 
 .profile-stats {
@@ -241,10 +305,6 @@ body {
     .header__back {
         opacity: 1;
     }
-}
-
-.avatar {
-    cursor: pointer;
 }
 
 .item-container {
@@ -412,4 +472,56 @@ canvas {
     50% {
         transform: rotate(5deg);
     }
+}
+
+.purchased-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1.5vmin solid gray;
+    color: gray;
+    background-color: rgba(200, 200, 200, 0.8);
+    font-size: 1.2em;
+    padding: 2% 3%;
+    border-radius: 8%;
+}
+
+.error {
+    animation: shake 0.5s;
+    background: #ff4444 !important;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+.notification {
+    position: fixed;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: black;
+    padding: 2%;
+    border-radius: 5px;
+    box-shadow: var(--shadow);
+    font-size: 1.2em;
+    z-index: 1000;
+    text-align: center;
+    animation: notificationSlide 1.2s forwards;
+}
+
+@keyframes notificationSlide {
+    0% { top: -8%; }
+    20% { top: 2%; }
+    90% { top: 2%; }
+    100% { top: -8%; }
 }

@@ -20,35 +20,35 @@
 
     <header class="header">
         <div class="header__back" data-navigate="main">←</div>
-        <div class="header__title" id="header-name"></div>
-        <div class="header__coins">1500c</div>
+        <div class="header__title" id="header-name" data-name></div>
+        <div class="header__coins" data-coins></div>
     </header>
 
     <main class="page-container">
+        <!-- Основная страница  -->
         <div id="main" class="page active">
             <div class="profile-card">
-                <div class="avatar" id="profile-pic" style="background: #e0e0e0" data-navigate="profile"></div>
+                <div class="avatar" id="profile-pic" data-navigate="profile">
+                    <div class="avatar-item" id="profile-item"></div>
+                </div>
                 <div class="stats">
                     <div class="stat-item">
                         <div class="xp-flex">
-                            <span>❤️ 60/100</span>
+                            <span>❤️</span><span data-xp></span>
                             <div class="progress-bar">
-                                <div class="progress" style="width: 60%"></div>
+                                <div class="progress"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="stat-item">Уровень: 10</div>
-                    <div class="stat-item">Монеты: 1500c</div>
+                    <div class="stat-item">Уровень: <span data-level></span></div>
+                    <div class="stat-item">Монеты: <span data-coins></span></div>
                 </div>
             </div>
 
             <div class="content-grid">
-                <div class="content-block" data-navigate="missions">
-                    <h2>Миссии</h2>
+                <div class="content-block">
+                    <h2 data-navigate="missions">Миссии</h2>
                     <div class="missions-grid">
-                        <div class="mission-item">Попить воды 1 раз - 100xp</div>
-                        <div class="mission-item">Попить воды 2 раза - 150xp</div>
-                        <div class="mission-item">Попить воды 3 раза - 200xp</div>
                     </div>
                 </div>
 
@@ -81,49 +81,38 @@
         <!-- Страница миссий -->
         <div id="missions" class="page">
             <div class="missions-section">
-                <h2>Solo миссии</h2>
-                <div class="missions-grid">
-                    <div class="mission-item">
-                        Попить воды 1 раз - 100xp <input type="checkbox">
-                    </div>
-                    <div class="mission-item">
-                        Попить воды 2 раза - 150xp <input type="checkbox">
-                    </div>
-                    <div class="mission-item">
-                        Попить воды 3 раза - 200xp <input type="checkbox">
-                    </div>
+                <h2>Персональные миссии</h2>
+                <div class="missions-grid" id="solo-missions">
                 </div>
             </div>
             <div class="missions-section">
-                <h2>Team миссии</h2>
-                <div class="missions-grid">
-                    <div class="mission-item">
-                        Обпейся воды - 1000xp <input type="checkbox">
-                    </div>
-                    <div class="mission-item">
-                        Обпейся воды - 1500xp <input type="checkbox">
-                    </div>
-                    <div class="mission-item">
-                        Обпейся воды - 2000xp <input type="checkbox">
-                    </div>
+                <h2>Командные миссии</h2>
+                <div class="missions-grid" id="team-missions">
+                </div>
+            </div>
+            <div class="missions-section">
+                <h2>Свои миссии</h2>
+                <div class="missions-grid" id="own-missions">
                 </div>
             </div>
         </div>
         <!-- Страница профиля -->
         <div id="profile" class="page">
             <div class="profile-card">
-                <div class="avatar-large" id="profile-pic-large" style="background: #e0e0e0"></div>
+                <div class="avatar-large" id="profile-pic-large">
+                    <div class="avatar-item" id="profile-item"></div>
+                </div>
                 <div class="stats">
                     <div class="stat-item">
                         <div class="xp-flex">
-                            <span>❤️ 60/100</span>
+                            <span>❤️</span><span data-xp></span>
                             <div class="progress-bar">
-                                <div class="progress" style="width: 60%"></div>
+                                <div class="progress"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="stat-item">Уровень: 10</div>
-                    <div class="stat-item">Монеты: 1500c</div>
+                    <div class="stat-item">Уровень: <span data-level></span></div>
+                    <div class="stat-item">Монеты: <span data-coins></span></div>
                 </div>
             </div>
             <div class="content-grid">
