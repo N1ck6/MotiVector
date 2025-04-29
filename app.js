@@ -1,3 +1,125 @@
+let demo = false;
+const guideOverlay = document.getElementById('guide-overlay');
+const focusRing = document.getElementById('focus-ring');
+const guideText = document.getElementById('guide-text');
+const closeBtn = document.getElementById('close-guide');
+
+// Текст гайда (элементы будут инициализированы позже)
+const guideSteps = [
+    { selector: '.header', text: 'Это ваш профиль. Здесь отображается уровень, опыт и монеты' },
+    { selector: '.missions-section', text: 'Миссии помогут заработать опыт. Выполняйте их ежедневно!' },
+    { selector: '.shop-section', text: 'В магазине можно купить косметику для профиля за монеты' }
+];
+
+let currentStep = 0;
+
+// Функция посимвольного вывода текста
+function typeText(text, callback) {
+    let i = 0;
+    guideText.innerHTML = '';
+    
+    const typingInterval = setInterval(() => {
+        if (i < text.length) {
+            guideText.innerHTML += text.charAt(i);
+            i++;
+        } else {
+            clearInterval(typingInterval);
+            if (callback) callback();
+        }
+    }, 30);
+}
+
+// Получение текущего элемента
+function getCurrentElement() {
+    return document.querySelector(guideSteps[currentStep].selector);
+}
+
+// Функция показа гайда
+function showGuide() {
+    if (!demo) return;
+    
+    // Блокируем интерактивные элементы
+    document.querySelectorAll('button, a, input').forEach(el => el.style.pointerEvents = 'none');
+    
+    // Показываем первый шаг
+    if (currentStep < guideSteps.length) {
+        const element = getCurrentElement();
+        
+        if (!element) {
+            console.error(`Элемент ${guideSteps[currentStep].selector} не найден`);
+            return;
+        }
+
+        // Анимация фокусировки
+        focusRing.style.transition = 'all 0.5s ease';
+        guideOverlay.style.opacity = 1;
+        
+        // Получаем позицию и размер элемента
+        const rect = element.getBoundingClientRect();
+        focusRing.style.width = `${rect.width + 40}px`;
+        focusRing.style.height = `${rect.height + 40}px`;
+        focusRing.style.left = `${rect.left - 20}px`;
+        focusRing.style.top = `${rect.top - 20}px`;
+        
+        // Применяем border-radius из оригинального элемента
+        const computedStyle = window.getComputedStyle(element);
+        focusRing.style.borderRadius = computedStyle.borderRadius || '50%';
+        
+        // Запускаем эффект печатания текста
+        setTimeout(() => {
+            guideText.style.opacity = 1;
+            typeText(guideSteps[currentStep].text, () => {
+                // Ожидание клика для продолжения
+                const nextStep = () => {
+                    guideText.style.opacity = 0;
+                    currentStep++;
+                    
+                    // Условие для переходов между страницами
+                    if (currentStep === 2) {
+                        router.showPage('shop'); // Пример перехода в магазин
+                        setTimeout(router.showPage('main', false), 1500); // Возврат через 1.5с
+                    }
+                    
+                    setTimeout(showGuide, 500);
+                    document.removeEventListener('click', nextStep);
+                };
+                
+                document.addEventListener('click', nextStep);
+            });
+        }, 600);
+    } else {
+        // Завершение гайда
+        guideOverlay.style.opacity = 0;
+        focusRing.style.width = focusRing.style.height = '0';
+        document.querySelectorAll('button, a, input').forEach(el => el.style.pointerEvents = 'auto');
+        demo = false;
+        currentStep = 0;
+    }
+}
+
+// Обработчик кнопки Demo
+document.querySelector('.demo-btn')?.addEventListener('click', () => {
+    demo = !demo;
+    if (demo) {
+        guideOverlay.style.display = 'block';
+        focusRing.style.display = 'block';
+        guideText.style.display = 'block';
+        closeBtn.style.opacity = 1;
+        currentStep = 0;
+        showGuide();
+    }
+});
+
+// Обработчик закрытия гайда
+closeBtn.addEventListener('click', () => {
+    demo = false;
+    guideOverlay.style.opacity = 0;
+    focusRing.style.width = focusRing.style.height = '0';
+    guideText.style.opacity = 0;
+    closeBtn.style.opacity = 0;
+    document.querySelectorAll('button, a, input').forEach(el => el.style.pointerEvents = 'auto');
+});
+
 let userData = {
     activeMissions: new Set(["Попить воды 1 раз - 100xp", "Попить воды 2 раза - 150xp", "Попить воды 3 раза - 200xp"]),
     completedMissions: new Set(),
@@ -158,6 +280,7 @@ function loadMissions() {
         mainMissions.appendChild(mission);
     });
 }
+
 loadMissions();
 updateActiveMissions();
 
