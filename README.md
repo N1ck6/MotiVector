@@ -1,6 +1,9 @@
 # MotiVector: Геймификация полезных привычек для студентов
 
 ## **Преимущества:**  
+
+<img align="right" height="150" src="https://raw.githubusercontent.com/N1ck6/MotiVector/refs/heads/main/data/qr.png"/>
+
 - **Только Telegram** — никаких лишних приложений. Все функции доступны через бота.  
 - **Игровые механики** — уровни, очки, аватары и миссии превращают рутину в квест.  
 - **Соревнуйтесь с друзьями** — групповые челленджи и рейтинги.  
@@ -31,7 +34,7 @@
 
 ## Быстрый старт  
 1. **Начните в Telegram**:  
-   Перейдите к боту [@HabitGamerBot](https://t.me/motiVectorBot) → Нажмите /start.  
+   Перейдите к боту [@HabitGamerBot](https://t.me/HabitGamerBot) → Нажмите /start.
 
 2. **Настройте расписание**:  
    Загрузите учебное расписание (поддерживает PDF) или введите вручную.  
@@ -47,10 +50,14 @@
 ## Технологии  
 - **Языки**: Python, JavaScript  
 - **Фреймворки**: Aiogram (Telegram API), SQLAlchemy  
-- **База данных**: SQLite  
-- **Аналитика**: Matplotlib для графиков  
+- **База данных**: SQLite
+
+---
+
+## Геймификация тебя:
+<img alt="pacman contribution graph" src="https://profile-readme-generator.com/assets/pacman.svg">
 
 ---
 
 ## Лицензия  
-Проект распространяется под лицензией [MIT](LICENSE).
+Проект распространяется под лицензией [MIT](LICENSE).  
