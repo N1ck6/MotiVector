@@ -21,7 +21,7 @@
     <header class="header">
         <div class="header__back" data-navigate="main">←</div>
         <div class="header__title" id="header-name" data-name></div>
-        <button class="demo-btn" id="demo-btn">д</button>
+        <button class="demo-btn" id="demo-btn">Демо</button>
         <div class="header__coins" id="coins" data-coins></div>
     </header>
 
@@ -53,7 +53,7 @@
 
             <div class="content-grid">
                 <div class="content-block">
-                    <h2 data-navigate="missions">Миссии</h2>
+                    <h2 data-navigate="missions"><span id="missions-tag">Миссии</span></h2>
                     <div class="missions-grid" id="main-missions">
                     </div>
                 </div>
@@ -61,26 +61,8 @@
                 <div class="divider"></div>
 
                 <div class="content-block">
-                    <h2 data-navigate="shop">Магазин</h2>
+                    <h2 data-navigate="shop"><span id="shop-tag">Магазин</span></h2>
                     <div class="items-grid" id="main-sales"></div>
-                </div>
-            </div>
-        </div>
-        <!-- Страница магазина -->
-        <div id="shop" class="page">
-            <div class="shop-section">
-                <h2>Все предметы</h2>
-                <div class="items-grid" id="all-items"></div>
-            </div>
-        </div>
-        <!-- Страница предмета -->
-        <div id="item" class="page">
-            <div class="item-container">
-                <div class="item-image" id="showcase-image"></div>
-                <div class="item-info">
-                    <h2 class="item-name" id="showcase-name">Аксессуар</h2>
-                    <div class="item-price">Цена: <span id="showcase-price">0</span></div>
-                    <button class="buy-button">Купить</button>
                 </div>
             </div>
         </div>
@@ -99,6 +81,24 @@
             <div class="missions-section">
                 <h2>Свои миссии</h2>
                 <div class="missions-grid" id="own-missions">
+                </div>
+            </div>
+        </div>
+        <!-- Страница магазина -->
+        <div id="shop" class="page">
+            <div class="shop-section">
+                <h2>Все предметы</h2>
+                <div class="items-grid" id="all-items"></div>
+            </div>
+        </div>
+        <!-- Страница предмета -->
+        <div id="item" class="page">
+            <div class="item-container">
+                <div class="item-image" id="showcase-image"></div>
+                <div class="item-info">
+                    <h2 class="item-name" id="showcase-name">Аксессуар</h2>
+                    <div class="item-price">Цена: <span id="showcase-price">0</span></div>
+                    <button class="buy-button">Купить</button>
                 </div>
             </div>
         </div>

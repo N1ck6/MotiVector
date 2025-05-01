@@ -93,7 +93,7 @@ body {
     position: relative;
     width: 60%;
     padding-top: 60%;
-    border-radius: 10%;
+    border-radius: var(--border-radius);
     margin-bottom: 15px;
     cursor: pointer;
     border: 3px solid var(--accent);
@@ -105,7 +105,7 @@ body {
     height: 30%;
     right: 5%;
     bottom: 5%;
-    border-radius: 15%;
+    border-radius: var(--border-radius);
 }
 
 .stats {
@@ -161,7 +161,6 @@ body {
     display: grid;
     grid-template-columns: repeat(1, 3fr);
     gap: 10px;
-    margin-top: 10px;
 }
 
 .items-grid {
@@ -175,7 +174,7 @@ body {
     position: relative;
     padding-top: 100%;
     background: #f0f0f0;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
 }
 
 .mission-item {
@@ -185,7 +184,7 @@ body {
     align-items: center;
     padding: 2.2%;
     background: var(--primary);
-    border-radius: var(--border-radius);
+    border-radius: 6px;
     border: 1px solid var(--accent);
     text-shadow: 0 0 3px var(--accent);
     overflow: hidden;
@@ -229,7 +228,7 @@ body {
 .missions-section {
     width: 90vw;
     max-width: 400px;
-    margin: 0 auto 5% auto;
+    margin: 0 auto 12px auto;
 }
 .shop-section {
     width: 90vw;
@@ -249,7 +248,7 @@ body {
 
 .avatar, .avatar-large, .avatar-item {
     background-repeat: no-repeat;
-    border-radius: 10%;
+    border-radius: var(--border-radius);
     background-size: cover;
     background-position: center;
 }
@@ -321,7 +320,7 @@ body {
     width: 200px;
     height: 200px;
     background-size: cover;
-    border-radius: 15px;
+    border-radius: var(--border-radius);
     margin-bottom: 20px;
     box-shadow: var(--shadow);
 }
@@ -362,7 +361,7 @@ body {
 
 .item {
     background-size: cover;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     transition: var(--transition);
 }
@@ -477,15 +476,16 @@ canvas {
 
 .purchased-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 65%;
+    left: 40%;
     transform: translate(-50%, -50%);
-    border: 1.5vmin solid gray;
+    border: 5px solid gray;
     color: gray;
     background-color: rgba(200, 200, 200, 0.8);
     font-size: 1.2em;
     padding: 2% 3%;
     border-radius: 8%;
+    rotate: 20deg;
 }
 
 .error {
@@ -531,12 +531,12 @@ canvas {
     position: fixed;
     display: none;
     top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    right: 0;
+    margin: 0 auto;
     color: white;
     font-size: 1.3em;
-    max-width: 80%;
-    min-width: 60%;
+    max-width: 380px;
     text-align: center;
     opacity: 0;
     z-index: 9;
@@ -546,7 +546,6 @@ canvas {
     padding: 10px 10px;
     border-radius: 10px;
     border: 2px solid var(--secondary);
-    display: none;
     pointer-events: none;
 }
 
@@ -558,10 +557,10 @@ canvas {
     background: var(--secondary);
     color: var(--text);
     border: none;
-    padding: 8px 12px;
+    padding: 6px 10px;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 1em;
     transition: opacity 0.3s;
 }
 
@@ -573,7 +572,7 @@ canvas {
     background: transparent;
     border: none;
     color: var(--text);
-    font-size: 24px;
+    font-size: 1.5em;
     z-index: 9;
     opacity: 1;
     transition: opacity 0.3s;

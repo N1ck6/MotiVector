@@ -6,11 +6,11 @@ const focusRing = document.getElementById("focus");
 
 const guideSteps = [
     { selector: '', text: 'Это основная страница. Тут собрана вся ключевая информация', page: '' },
-    { selector: 'Картинка профиля', text: 'При нажатии на аватар можно попасть на страницу профиля', page: 'profile', x: 215, y: 190, r: 150 },
+    { selector: 'profile-pic', text: 'При нажатии на аватар можно попасть на страницу профиля', page: 'profile' },
     { selector: '', text: 'Здесь собрана более детальная информация о вас, и находится раздел настроек', page: 'main' },
-    { selector: 'Кнопка миссии', text: 'При нажатии на "Миссии" можно попасть на страницу миссий', page: 'missions', x: 85, y: 500, r: 60 },
+    { selector: 'missions-tag', text: 'При нажатии на "Миссии" можно попасть на страницу миссий', page: 'missions' },
     { selector: '', text: 'Тут можно закреплять задания на основную страницу и отмечать сделанные', page: 'main' },
-    { selector: 'Кнопка магазин', text: 'При нажатии на "Магазин" можно попасть на страницу магазина', page: 'shop', x: 87, y: 750, r: 60 },
+    { selector: 'shop-tag', text: 'При нажатии на "Магазин" можно попасть на страницу магазина', page: 'shop' },
     { selector: '', text: 'В магазине можно купить косметику для профиля за монеты', page: 'main' },
     { selector: '', text: 'На этом гайд заканчивается, но ваше путешествие только начинается. Удачи!', page: '' },
 ];
@@ -40,12 +40,16 @@ function showGuide() {
                 const nextStep = () => {
                     guideText.style.opacity = 0;
                     page = guideSteps[currentStep].page
-                    if (page) router.showPage(page, !(page === 'main'));
+                    if (page === 'main') router.back();
+                    if (page) router.showPage(page);
                     if (page === 'shop') document.getElementById('coins').style.display = 'none';
                     if (page === 'profile') demoBtn.style.display = 'none';
                     currentStep++;
-                    if (guideSteps[currentStep].selector) {
-                        spotlight(guideSteps[currentStep].x, guideSteps[currentStep].y, guideSteps[currentStep].r);
+                    if (currentStep < guideSteps.length && guideSteps[currentStep].selector) {
+                        setTimeout(() => {
+                            const r=document.getElementById(guideSteps[currentStep].selector).getBoundingClientRect(), cx=(r.left+r.right)/2, cy=(r.top+r.bottom)/2;
+                            spotlight(cx, cy, Math.hypot(r.right+2-cx, r.top-cy));
+                        }, 400);
                     } else removeSpotlight();
                     setTimeout(showGuide, 600);
                     document.removeEventListener('click', nextStep);
@@ -65,7 +69,7 @@ closeBtn.addEventListener('click', () => endGuide());
 
 function startGuide() {
     demo = true;
-    for (;;) if (!(router.currentRoute === 'main')) router.showPage('main', false); else break;
+    router.back();
     guideText.style.display = 'block';
     guideText.style.opacity = 0;
     closeBtn.style.display = 'block';
@@ -83,7 +87,6 @@ function endGuide() {
     guideText.style.display = 'none';
     closeBtn.style.display = 'none';
     overlay.style.display = 'none';
-    demoBtn.style.display = 'block';
     if (page === 'shop') document.getElementById('coins').style.display = 'block';
     if (page === 'profile') demoBtn.style.display = 'block';
     currentStep = 0;
@@ -173,13 +176,11 @@ class Router {
         window.history.back();
     }
 }
-function createMissionElement(text, isActive = false) {
+function createMissionElement(text, isActive = false, main = false) {
     const mission = document.createElement('div');
     mission.className = 'mission-item';
-    mission.innerHTML = `
-        ${text} 
-        <input type="checkbox" ${isActive ? 'checked' : ''}>
-    `;
+    mission.innerHTML = `${text}`;
+    if (!main) mission.innerHTML += `<input type="checkbox" ${isActive ? 'checked' : ''}>`;
     
     mission.addEventListener('click', (e) => {
         if(e.target.tagName !== 'INPUT') toggleMissionCompletion(text);
@@ -205,7 +206,7 @@ function updateActiveMissions() {
     mainMissions.innerHTML = '';
     
     Array.from(userData.activeMissions).forEach(text => {
-        mission = createMissionElement(text, true);
+        mission = createMissionElement(text, true, true);
         if (userData.completedMissions.has(text)) mission.classList.add('completed');
         mainMissions.appendChild(mission);
     });
