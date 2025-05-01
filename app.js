@@ -69,6 +69,15 @@ closeBtn.addEventListener('click', () => endGuide());
 
 function startGuide() {
     demo = true;
+<<<<<<< HEAD
+=======
+    router.back();
+    guideText.style.display = 'block';
+    guideText.style.opacity = 0;
+    closeBtn.style.display = 'block';
+    overlay.style.display = 'block';
+    demoBtn.style.display = 'none';
+>>>>>>> c35cbb2fb5e4600539aa17df10d99af0ae504ba7
     currentStep = 0;
     guideText.style.opacity = 0;
     overlay.style.display = 'block';
@@ -91,9 +100,12 @@ function endGuide() {
     guideText.style.display = 'none';
     closeBtn.style.display = 'none';
     overlay.style.display = 'none';
+<<<<<<< HEAD
     currentStep = 0;
     document.querySelectorAll('button, a, input').forEach(el => el.style.pointerEvents = 'auto');
     page = router.currentRoute;
+=======
+>>>>>>> c35cbb2fb5e4600539aa17df10d99af0ae504ba7
     if (page === 'shop') document.getElementById('coins').style.display = 'block';
     if (page === 'profile') demoBtn.style.display = 'block';
 }
