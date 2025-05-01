@@ -1,3 +1,97 @@
+let demo = false;
+let typingInterval;
+const guideText = document.getElementById('guide-text');
+const closeBtn = document.getElementById('close-guide');
+const focusRing = document.getElementById("focus");
+
+const guideSteps = [
+    { selector: '', text: 'Это основная страница. Тут собрана вся ключевая информация', page: '' },
+    { selector: 'Картинка профиля', text: 'При нажатии на аватар можно попасть на страницу профиля', page: 'profile', x: 215, y: 190, r: 150 },
+    { selector: '', text: 'Здесь собрана более детальная информация о вас, и находится раздел настроек', page: 'main' },
+    { selector: 'Кнопка миссии', text: 'При нажатии на "Миссии" можно попасть на страницу миссий', page: 'missions', x: 85, y: 500, r: 60 },
+    { selector: '', text: 'Тут можно закреплять задания на основную страницу и отмечать сделанные', page: 'main' },
+    { selector: 'Кнопка магазин', text: 'При нажатии на "Магазин" можно попасть на страницу магазина', page: 'shop', x: 87, y: 750, r: 60 },
+    { selector: '', text: 'В магазине можно купить косметику для профиля за монеты', page: 'main' },
+    { selector: '', text: 'На этом гайд заканчивается, но ваше путешествие только начинается. Удачи!', page: '' },
+];
+
+let currentStep = 0;
+
+function typeText(text, callback) {
+    let i = 0;
+    guideText.innerHTML = '';
+    typingInterval = setInterval(() => {
+        if (i < text.length) {
+            guideText.innerHTML += text.charAt(i);
+            i++;
+        } else {
+            clearInterval(typingInterval);
+            if (callback) callback();
+        }
+    }, 30);
+}
+
+function showGuide() {
+    if (currentStep < guideSteps.length) {
+
+        setTimeout(() => {
+            guideText.style.opacity = 1;
+            typeText(guideSteps[currentStep].text, () => {
+                const nextStep = () => {
+                    guideText.style.opacity = 0;
+                    page = guideSteps[currentStep].page
+                    if (page) router.showPage(page, !(page === 'main'));
+                    if (page === 'shop') document.getElementById('coins').style.display = 'none';
+                    if (page === 'profile') demoBtn.style.display = 'none';
+                    currentStep++;
+                    if (guideSteps[currentStep].selector) {
+                        spotlight(guideSteps[currentStep].x, guideSteps[currentStep].y, guideSteps[currentStep].r);
+                    } else removeSpotlight();
+                    setTimeout(showGuide, 600);
+                    document.removeEventListener('click', nextStep);
+                };
+                
+                document.addEventListener('click', nextStep);
+            });
+        }, 800);
+    } else {
+        endGuide();
+    }
+}
+
+const demoBtn = document.getElementById('demo-btn')
+demoBtn.addEventListener('click', () => startGuide());
+closeBtn.addEventListener('click', () => endGuide());
+
+function startGuide() {
+    demo = true;
+    for (;;) if (!(router.currentRoute === 'main')) router.showPage('main', false); else break;
+    guideText.style.display = 'block';
+    guideText.style.opacity = 0;
+    closeBtn.style.display = 'block';
+    overlay.style.display = 'block';
+    demoBtn.style.display = 'none';
+    currentStep = 0;
+    document.querySelectorAll('button, a, input').forEach(el => el.style.pointerEvents = 'none');
+    closeBtn.style.pointerEvents = 'auto';
+    showGuide();
+}
+
+function endGuide() {
+    demo = false;
+    removeSpotlight();
+    guideText.style.display = 'none';
+    closeBtn.style.display = 'none';
+    overlay.style.display = 'none';
+    demoBtn.style.display = 'block';
+    if (page === 'shop') document.getElementById('coins').style.display = 'block';
+    if (page === 'profile') demoBtn.style.display = 'block';
+    currentStep = 0;
+    if (typingInterval) clearInterval(typingInterval);
+    guideText.innerHTML = '';
+    document.querySelectorAll('button, a, input').forEach(el => el.style.pointerEvents = 'auto');
+}
+
 let userData = {
     activeMissions: new Set(["Попить воды 1 раз - 100xp", "Попить воды 2 раза - 150xp", "Попить воды 3 раза - 200xp"]),
     completedMissions: new Set(),
@@ -40,7 +134,6 @@ class Router {
 
     async showPage(routeName, pushState = true) {
         if (routeName === this.currentRoute) return;
-
         const newPage = this.routes[routeName];
         const oldPage = this.routes[this.currentRoute];
         const backButton = document.querySelector('.header__back');
@@ -52,9 +145,11 @@ class Router {
             if (!pushState) oldPage.style.transform = "translateX(30%)";
             else oldPage.style.transform = "translateX(-30%)";
             oldPage.style.opacity = "0";
-            await new Promise((r) => setTimeout(r, 300));
-            oldPage.classList.remove("active");
-            oldPage.style.display = 'none';
+            setTimeout(() => {
+                oldPage.classList.remove("active");
+                oldPage.style.display = 'none';
+            }, 300);
+            
         }
 
         newPage.style.transform = 'translateX(30%)';
@@ -63,6 +158,7 @@ class Router {
         
         displayCoins.style.display = routeName === "shop" || routeName === "item" ? "flex" : "none";
         backButton.style.display = routeName === "main" ? "none" : "flex";
+        demoBtn.style.display = routeName === "profile" ? "flex" : "none";
         backButton.setAttribute('data-navigate', this.currentRoute);
         
         requestAnimationFrame(() => {
@@ -158,6 +254,7 @@ function loadMissions() {
         mainMissions.appendChild(mission);
     });
 }
+
 loadMissions();
 updateActiveMissions();
 
@@ -442,4 +539,39 @@ class Notification {
     show() {
         setTimeout(() => this.el.remove(), 1200);
     }
+}
+
+
+const overlay = document.getElementById("focus-ring");
+const w = document.body.clientWidth/2;
+const h = document.body.clientHeight/2;
+
+function removeSpotlight() {
+    const currentRadius = parseFloat(getComputedStyle(overlay).getPropertyValue('--radius'));
+    animateRadius(currentRadius, 4*h);
+    overlay.style.setProperty('--radius', `${4*h}px`);
+}
+
+function animateRadius(start, end, duration=600) {
+    let startTimestamp = null;
+    function step(timestamp) {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const currentRadius = start + (end - start) * progress;
+        overlay.style.setProperty('--radius', `${currentRadius}px`);
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        }
+    }
+    requestAnimationFrame(step);
+}
+
+function spotlight(pos_x, pos_y, r) {
+    const currentRadius = parseFloat(getComputedStyle(overlay).getPropertyValue('--radius'));
+    animateRadius(currentRadius, r);
+    overlay.style.maskPosition = `${pos_x+w}px ${pos_y+h}px`;
+    overlay.style.opacity = "0.6";
+    setTimeout(() => {
+        overlay.style.opacity = "1";
+    }, 600);
 }
