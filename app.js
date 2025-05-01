@@ -1,24 +1,26 @@
 let demo = false;
-const guideOverlay = document.getElementById('guide-overlay');
-const focusRing = document.getElementById('focus-ring');
+let typingInterval;
 const guideText = document.getElementById('guide-text');
 const closeBtn = document.getElementById('close-guide');
+const focusRing = document.getElementById("focus");
 
-// Текст гайда (элементы будут инициализированы позже)
 const guideSteps = [
-    { selector: '.header', text: 'Это ваш профиль. Здесь отображается уровень, опыт и монеты' },
-    { selector: '.missions-section', text: 'Миссии помогут заработать опыт. Выполняйте их ежедневно!' },
-    { selector: '.shop-section', text: 'В магазине можно купить косметику для профиля за монеты' }
+    { selector: '', text: 'Это основная страница. Тут собрана вся ключевая информация', page: '' },
+    { selector: 'Картинка профиля', text: 'При нажатии на аватар можно попасть на страницу профиля', page: 'profile', x: 215, y: 190, r: 150 },
+    { selector: '', text: 'Здесь собрана более детальная информация о вас, и находится раздел настроек', page: 'main' },
+    { selector: 'Кнопка миссии', text: 'При нажатии на "Миссии" можно попасть на страницу миссий', page: 'missions', x: 85, y: 500, r: 60 },
+    { selector: '', text: 'Тут можно закреплять задания на основную страницу и отмечать сделанные', page: 'main' },
+    { selector: 'Кнопка магазин', text: 'При нажатии на "Магазин" можно попасть на страницу магазина', page: 'shop', x: 87, y: 750, r: 60 },
+    { selector: '', text: 'В магазине можно купить косметику для профиля за монеты', page: 'main' },
+    { selector: '', text: 'На этом гайд заканчивается, но ваше путешествие только начинается. Удачи!', page: '' },
 ];
 
 let currentStep = 0;
 
-// Функция посимвольного вывода текста
 function typeText(text, callback) {
     let i = 0;
     guideText.innerHTML = '';
-    
-    const typingInterval = setInterval(() => {
+    typingInterval = setInterval(() => {
         if (i < text.length) {
             guideText.innerHTML += text.charAt(i);
             i++;
@@ -29,96 +31,66 @@ function typeText(text, callback) {
     }, 30);
 }
 
-// Получение текущего элемента
-function getCurrentElement() {
-    return document.querySelector(guideSteps[currentStep].selector);
-}
-
-// Функция показа гайда
 function showGuide() {
-    if (!demo) return;
-    
-    // Блокируем интерактивные элементы
-    document.querySelectorAll('button, a, input').forEach(el => el.style.pointerEvents = 'none');
-    
-    // Показываем первый шаг
     if (currentStep < guideSteps.length) {
-        const element = getCurrentElement();
-        
-        if (!element) {
-            console.error(`Элемент ${guideSteps[currentStep].selector} не найден`);
-            return;
-        }
 
-        // Анимация фокусировки
-        focusRing.style.transition = 'all 0.5s ease';
-        guideOverlay.style.opacity = 1;
-        
-        // Получаем позицию и размер элемента
-        const rect = element.getBoundingClientRect();
-        focusRing.style.width = `${rect.width + 40}px`;
-        focusRing.style.height = `${rect.height + 40}px`;
-        focusRing.style.left = `${rect.left - 20}px`;
-        focusRing.style.top = `${rect.top - 20}px`;
-        
-        // Применяем border-radius из оригинального элемента
-        const computedStyle = window.getComputedStyle(element);
-        focusRing.style.borderRadius = computedStyle.borderRadius || '50%';
-        
-        // Запускаем эффект печатания текста
         setTimeout(() => {
             guideText.style.opacity = 1;
             typeText(guideSteps[currentStep].text, () => {
-                // Ожидание клика для продолжения
                 const nextStep = () => {
                     guideText.style.opacity = 0;
+                    page = guideSteps[currentStep].page
+                    if (page) router.showPage(page, !(page === 'main'));
+                    if (page === 'shop') document.getElementById('coins').style.display = 'none';
+                    if (page === 'profile') demoBtn.style.display = 'none';
                     currentStep++;
-                    
-                    // Условие для переходов между страницами
-                    if (currentStep === 2) {
-                        router.showPage('shop'); // Пример перехода в магазин
-                        setTimeout(router.showPage('main', false), 1500); // Возврат через 1.5с
-                    }
-                    
-                    setTimeout(showGuide, 500);
+                    if (guideSteps[currentStep].selector) {
+                        spotlight(guideSteps[currentStep].x, guideSteps[currentStep].y, guideSteps[currentStep].r);
+                    } else removeSpotlight();
+                    setTimeout(showGuide, 600);
                     document.removeEventListener('click', nextStep);
                 };
                 
                 document.addEventListener('click', nextStep);
             });
-        }, 600);
+        }, 800);
     } else {
-        // Завершение гайда
-        guideOverlay.style.opacity = 0;
-        focusRing.style.width = focusRing.style.height = '0';
-        document.querySelectorAll('button, a, input').forEach(el => el.style.pointerEvents = 'auto');
-        demo = false;
-        currentStep = 0;
+        endGuide();
     }
 }
 
-// Обработчик кнопки Demo
-document.querySelector('.demo-btn')?.addEventListener('click', () => {
-    demo = !demo;
-    if (demo) {
-        guideOverlay.style.display = 'block';
-        focusRing.style.display = 'block';
-        guideText.style.display = 'block';
-        closeBtn.style.opacity = 1;
-        currentStep = 0;
-        showGuide();
-    }
-});
+const demoBtn = document.getElementById('demo-btn')
+demoBtn.addEventListener('click', () => startGuide());
+closeBtn.addEventListener('click', () => endGuide());
 
-// Обработчик закрытия гайда
-closeBtn.addEventListener('click', () => {
-    demo = false;
-    guideOverlay.style.opacity = 0;
-    focusRing.style.width = focusRing.style.height = '0';
+function startGuide() {
+    demo = true;
+    for (;;) if (!(router.currentRoute === 'main')) router.showPage('main', false); else break;
+    guideText.style.display = 'block';
     guideText.style.opacity = 0;
-    closeBtn.style.opacity = 0;
+    closeBtn.style.display = 'block';
+    overlay.style.display = 'block';
+    demoBtn.style.display = 'none';
+    currentStep = 0;
+    document.querySelectorAll('button, a, input').forEach(el => el.style.pointerEvents = 'none');
+    closeBtn.style.pointerEvents = 'auto';
+    showGuide();
+}
+
+function endGuide() {
+    demo = false;
+    removeSpotlight();
+    guideText.style.display = 'none';
+    closeBtn.style.display = 'none';
+    overlay.style.display = 'none';
+    demoBtn.style.display = 'block';
+    if (page === 'shop') document.getElementById('coins').style.display = 'block';
+    if (page === 'profile') demoBtn.style.display = 'block';
+    currentStep = 0;
+    if (typingInterval) clearInterval(typingInterval);
+    guideText.innerHTML = '';
     document.querySelectorAll('button, a, input').forEach(el => el.style.pointerEvents = 'auto');
-});
+}
 
 let userData = {
     activeMissions: new Set(["Попить воды 1 раз - 100xp", "Попить воды 2 раза - 150xp", "Попить воды 3 раза - 200xp"]),
@@ -162,7 +134,6 @@ class Router {
 
     async showPage(routeName, pushState = true) {
         if (routeName === this.currentRoute) return;
-
         const newPage = this.routes[routeName];
         const oldPage = this.routes[this.currentRoute];
         const backButton = document.querySelector('.header__back');
@@ -174,9 +145,11 @@ class Router {
             if (!pushState) oldPage.style.transform = "translateX(30%)";
             else oldPage.style.transform = "translateX(-30%)";
             oldPage.style.opacity = "0";
-            await new Promise((r) => setTimeout(r, 300));
-            oldPage.classList.remove("active");
-            oldPage.style.display = 'none';
+            setTimeout(() => {
+                oldPage.classList.remove("active");
+                oldPage.style.display = 'none';
+            }, 300);
+            
         }
 
         newPage.style.transform = 'translateX(30%)';
@@ -185,6 +158,7 @@ class Router {
         
         displayCoins.style.display = routeName === "shop" || routeName === "item" ? "flex" : "none";
         backButton.style.display = routeName === "main" ? "none" : "flex";
+        demoBtn.style.display = routeName === "profile" ? "flex" : "none";
         backButton.setAttribute('data-navigate', this.currentRoute);
         
         requestAnimationFrame(() => {
@@ -565,4 +539,39 @@ class Notification {
     show() {
         setTimeout(() => this.el.remove(), 1200);
     }
+}
+
+
+const overlay = document.getElementById("focus-ring");
+const w = document.body.clientWidth/2;
+const h = document.body.clientHeight/2;
+
+function removeSpotlight() {
+    const currentRadius = parseFloat(getComputedStyle(overlay).getPropertyValue('--radius'));
+    animateRadius(currentRadius, 4*h);
+    overlay.style.setProperty('--radius', `${4*h}px`);
+}
+
+function animateRadius(start, end, duration=600) {
+    let startTimestamp = null;
+    function step(timestamp) {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const currentRadius = start + (end - start) * progress;
+        overlay.style.setProperty('--radius', `${currentRadius}px`);
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        }
+    }
+    requestAnimationFrame(step);
+}
+
+function spotlight(pos_x, pos_y, r) {
+    const currentRadius = parseFloat(getComputedStyle(overlay).getPropertyValue('--radius'));
+    animateRadius(currentRadius, r);
+    overlay.style.maskPosition = `${pos_x+w}px ${pos_y+h}px`;
+    overlay.style.opacity = "0.6";
+    setTimeout(() => {
+        overlay.style.opacity = "1";
+    }, 600);
 }
