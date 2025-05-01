@@ -513,9 +513,20 @@ document.querySelector('.buy-button').addEventListener('click', () => {
         userData.coins -= price;
         userData.purchasedItems.add(itemName);
         updateUserData('coins', userData.coins);
+        notified = true;
         new Notification('Покупка успешна!').show();
+        setTimeout(() => {
+            notified = false;
+        }, 1200);
     } else {
-        new Notification('Недостаточно монет!').show();
+        if (!notified) {
+            notified = true;
+            new Notification('Недостаточно монет!').show();
+            setTimeout(() => {
+                notified = false;
+            }, 1200);
+        }
+        
         return
     }
     document.querySelectorAll('.item-placeholder').forEach(item => {
