@@ -48,7 +48,7 @@ function showGuide() {
                     if (currentStep < guideSteps.length && guideSteps[currentStep].selector) {
                         setTimeout(() => {
                             const r=document.getElementById(guideSteps[currentStep].selector).getBoundingClientRect(), cx=(r.left+r.right)/2, cy=(r.top+r.bottom)/2;
-                            spotlight(cx, cy, Math.hypot(r.right+2-cx, r.top-cy));
+                            spotlight(cx, cy, r.width*1.5, r.height*1.4);
                         }, 400);
                     } else removeSpotlight();
                     setTimeout(showGuide, 600);
@@ -70,6 +70,7 @@ closeBtn.addEventListener('click', () => endGuide());
 function startGuide() {
     demo = true;
     currentStep = 0;
+    document.body.classList.add('no-scroll');
     guideText.style.opacity = 0;
     overlay.style.display = 'block';
     closeBtn.style.display = 'block';
@@ -88,6 +89,7 @@ function endGuide() {
     demo = false;
     if (typingInterval) clearInterval(typingInterval);
     removeSpotlight();
+    document.body.classList.remove('no-scroll');
     guideText.style.display = 'none';
     closeBtn.style.display = 'none';
     overlay.style.display = 'none';
@@ -338,12 +340,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 window.addEventListener("load", () => {
     setTimeout(() => {
-        document.querySelector(".preloader").style.opacity = "0";
+    document.querySelector(".preloader").style.opacity = "0";
         setTimeout(() => {
             document.querySelector(".preloader").remove();
         }, 500);
-        }, 500);
+    }, 300);
+    requestAnimationFrame(() => {
+        overlay.style.setProperty('--ellipse-width', '200px');
+        overlay.style.setProperty('--ellipse-height', '100px');
     });
+});
 
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", function (e) {
@@ -455,10 +461,8 @@ const now = Date.now() / 1000;
 const canvas = document.getElementById("sandCanvas");
 const ctx = canvas.getContext("2d");
 let notified = false;
-canvas.width = 300;
-canvas.height = 300;
 ctx.beginPath();
-ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2 -7, 0, Math.PI * 2);
+ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2 - 7, 0, Math.PI * 2);
 ctx.clip();
 
 class Grain {
@@ -558,35 +562,21 @@ class Notification {
 
 
 const overlay = document.getElementById("focus-ring");
-const w = document.body.clientWidth/2;
-const h = document.body.clientHeight/2;
+const w = document.body.clientWidth;
+const h = document.body.clientHeight;
 
 function removeSpotlight() {
-    const currentRadius = parseFloat(getComputedStyle(overlay).getPropertyValue('--radius'));
-    animateRadius(currentRadius, 4*h);
-    overlay.style.setProperty('--radius', `${4*h}px`);
+    overlay.style.opacity = "0.4";
+    overlay.style.setProperty('--ellipse-x', `50%`);
+    overlay.style.setProperty('--ellipse-y', `50%`);
+    overlay.style.setProperty('--ellipse-width', `${2*w}px`);
+    overlay.style.setProperty('--ellipse-height', `${2*h}px`);
 }
 
-function animateRadius(start, end, duration=600) {
-    let startTimestamp = null;
-    function step(timestamp) {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const currentRadius = start + (end - start) * progress;
-        overlay.style.setProperty('--radius', `${currentRadius}px`);
-        if (progress < 1) {
-            requestAnimationFrame(step);
-        }
-    }
-    requestAnimationFrame(step);
-}
-
-function spotlight(pos_x, pos_y, r) {
-    const currentRadius = parseFloat(getComputedStyle(overlay).getPropertyValue('--radius'));
-    animateRadius(currentRadius, r);
-    overlay.style.maskPosition = `${pos_x+w}px ${pos_y+h}px`;
-    overlay.style.opacity = "0.6";
-    setTimeout(() => {
-        overlay.style.opacity = "1";
-    }, 600);
+function spotlight(x, y, w, h) {
+    overlay.style.opacity = "0.9";
+    overlay.style.setProperty('--ellipse-x', `${(x / window.innerWidth) * 100}%`);
+    overlay.style.setProperty('--ellipse-y', `${(y / window.innerHeight) * 100}%`);
+    overlay.style.setProperty('--ellipse-width', `${w}px`);
+    overlay.style.setProperty('--ellipse-height', `${h}px`);
 }

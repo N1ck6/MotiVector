@@ -8,6 +8,11 @@
     --border-radius: 12px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --radius: 300vh;
+
+    --ellipse-width: 0px;
+    --ellipse-height: 0px;
+    --ellipse-x: 50%;
+    --ellipse-y: 50%;
 }
 
 * {
@@ -580,7 +585,6 @@ canvas {
     opacity: 1;
     transition: opacity 0.3s;
 }
-
 .overlay {
     position: fixed;
     display: none;
@@ -588,9 +592,21 @@ canvas {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    mask-image: radial-gradient(circle at center, transparent var(--radius), black var(--radius));
+    background-color: rgba(0, 0, 0, 0.9);
+    mask: radial-gradient(
+        ellipse calc(var(--ellipse-width) / 2) calc(var(--ellipse-height) / 2) at 
+        var(--ellipse-x) var(--ellipse-y),
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0) calc(100% - 15px),
+        rgba(0, 0, 0, 1) 100%
+    );
     opacity: 0;
-    transition: opacity 0.3s ease, mask-position 0.5s ease;
+    transition: opacity 0.3s ease, mask 1.5s ease;
     z-index: 8;
+}
+
+.no-scroll {
+    overflow: hidden;
+    height: 100vh;
+    width: 100%;
 }
